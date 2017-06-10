@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      html {
+        font-family: sans-serif;
+        font-size: 0.16in;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      .container {
+        display: table;
+      }
+
+      .panel {
+        display: table-row;
+      }
+
+      .panel-body {
+        display: table-cell;
+        border: 3px solid #000;
+        width: 20rem;
+        height: 12.5rem;
+        overflow: none;
+      }
+
+      .container .panel:last-child {
+        transform: rotate(180deg);
+      }
+
+      .display-name {
+        background: #000;
+        color: #fff;
+        text-align: center;
+      }
+
+      .key-data {
+        position: relative;
+        padding: 0.5rem;
+      }
+
+      .key-data .key-label {
+        position: absolute;
+        left: 56%;
+        top: 0.3rem;
+        font-size: 1.5rem;
+      }
+
+      .key-data .key-text {
+        font-size: 1rem;
+        font-family: Monaco;
+        position: absolute;
+        left: 56%;
+        top: 2.3rem;
+      }
+
+      form {
+        margin-top: 1rem;
+      }
+
+      @media print {
+        form {
+          display: none;
+        }
+      }
+
+      /*.private .key-text {
+        font-size: 0.65rem;
+        line-height: 0.7rem;
+      }*/
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="panel">
+        <div class="panel-body">
+          <div class="display-name"></div>
+          <div class="public key-data">
+            <div class="key-qr"></div>
+            <div class="key-label">Public Key</div>
+            <div class="key-text"></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-body">
+          <div class="display-name"></div>
+          <div class="private key-data">
+            <div class="key-qr"></div>
+            <div class="key-label">Private Key</div>
+            <div class="key-text"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <form>
+      <input class="input-name" /><br/>
+      <input class="input-public" /><br/>
+      <input class="input-private" />
+    </form>
+    <script src="qr.js"></script>
+    <script>
+      function updateName(value) {
+        Array.from(document.querySelectorAll('.display-name')).forEach(function(displayName) {
+          displayName.innerHTML = value;
+        });
+      }
+
+      function updateKey(type, value) {
+        var root = document.querySelector('.' + type + '.key-data');
+        root.querySelector('.key-text').innerText = wrap(value);
+
+        var qr = root.querySelector('.key-qr');
+        qr.innerHTML = '';
+        var size = 154;
+        new QRCode(qr, { text: value, width: size, height: size });
+      }
+
+      var nameInput = document.querySelector('.input-name');
+      var publicInput = document.querySelector('.input-public');
+      var privateInput = document.querySelector('.input-private');
+
+      nameInput.value = 'Name';
+      publicInput.value = 'PublicKey';
+      privateInput.value = 'PrivateKey';
+
+      updateName(nameInput.value);
+      nameInput.addEventListener('input', function() {
+        updateName(nameInput.value);
+      });
+
+      updateKey('public', publicInput.value);
+      publicInput.addEventListener('input', function() {
+        updateKey('public', publicInput.value);
+      });
+
+      updateKey('private', privateInput.value);
+      privateInput.addEventListener('input', function() {
+        updateKey('private', privateInput.value);
+      });
+
+      function wrap(text) {
+        var n = 13;
+        if (text.length <= n) return text;
+        return text.substring(0, n) + ' ' + wrap(text.substring(n), n);
+      }
+    </script>
+  </body>
+</html>

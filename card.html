@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      html {
+        font-family: sans-serif;
+        font-size: 0.14in;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      .container {
+        display: table;
+      }
+
+      .panel {
+        display: table-row;
+      }
+
+      .panel-body {
+        display: table-cell;
+        border: 3px solid #000;
+        width: 20rem;
+        height: 12.5rem;
+        position: relative;
+      }
+
+      .container .panel:last-child {
+        transform: rotate(180deg);
+      }
+
+      .wallet {
+        position: absolute;
+        top: 0.5rem;
+        bottom: 0.5rem;
+        width: 9rem;
+        text-align: center;
+      }
+
+      .panel-body .wallet:first-child {
+        left: 0.5rem;
+      }
+
+      .panel-body .wallet:last-child {
+        right: 0.5rem;
+      }
+
+      .label {
+        font-weight: bold;
+        font-size: 1.3rem;
+        z-index: 1000;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="panel">
+        <div class="panel-body">
+          <div class="wallet wallet-1">
+            <div class="label"></div>
+            <div class="qr"></div>
+          </div>
+          <div class="wallet wallet-2">
+            <div class="label"></div>
+            <div class="qr"></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-body">
+          <div class="wallet wallet-3">
+            <div class="label"></div>
+            <div class="qr"></div>
+          </div>
+          <div class="wallet wallet-4">
+            <div class="label"></div>
+            <div class="qr"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <form>
+      <p class="data-1">
+        <input class="input-name" value="Wallet 1 Name" />
+        <input class="input-key" value="Wallet 1 Key" />
+        <input type="checkbox" class="input-toggle" checked />
+      </p>
+      <p class="data-2">
+        <input class="input-name" value="Wallet 2 Name" />
+        <input class="input-key" value="Wallet 2 Key" />
+        <input type="checkbox" class="input-toggle" checked />
+      </p>
+      <p class="data-3">
+        <input class="input-name" value="Wallet 3 Name" />
+        <input class="input-key" value="Wallet 3 Key" />
+        <input type="checkbox" class="input-toggle" checked />
+      </p>
+      <p class="data-4">
+        <input class="input-name" value="Wallet 4 Name" />
+        <input class="input-key" value="Wallet 4 Key" />
+        <input type="checkbox" class="input-toggle" checked />
+      </p>
+    </form>
+    <script src="qr.js"></script>
+    <script>
+      function bindName(n) {
+        var input = document.querySelector('.data-' + n + ' .input-name');
+        var display = document.querySelector('.wallet-' + n + ' .label');
+        update();
+        input.addEventListener('input', update);
+        function update() {
+          display.innerText = input.value;
+        };
+      }
+
+      function bindAddress(n) {
+        var input = document.querySelector('.data-' + n + ' .input-key');
+        var display = document.querySelector('.wallet-' + n + ' .qr');
+        update();
+        input.addEventListener('input', update);
+        function update() {
+          display.innerHTML = '';
+          var size = display.offsetWidth;
+          new QRCode(display, { text: input.value, width: size, height: size });
+        };
+      }
+
+      function bindToggle(n) {
+        var input = document.querySelector('.data-' + n + ' .input-toggle');
+        var display = document.querySelector('.wallet-' + n);
+        update();
+        input.addEventListener('click', update);
+        function update() {
+          display.style.visibility = input.checked ? 'visible' : 'hidden';
+        };
+      }
+
+      function bind(n) {
+        bindName(n);
+        bindAddress(n);
+        bindToggle(n);
+      }
+
+      function bindAll() {
+        [1, 2, 3, 4].forEach(n => bind(n));
+      }
+
+      bindAll();
+    </script>
+  </body>
+</html>
